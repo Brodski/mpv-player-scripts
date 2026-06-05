@@ -67,6 +67,24 @@ function on_end(event)
 end
 
 
+-- r key = remove
+function remove_current_from_map()
+    local playlist = mp.get_property_native("playlist")
+    for i, entry in pairs(playlist) do
+        if entry.current then
+            if playlist_bski[entry.filename] then
+                playlist_bski[entry.filename] = nil
+                msg.info("[REMOVE] Removed from custom map: " .. entry.filename)
+                mp.commandv("playlist-remove", i - 1) -- mpv uses 0-based index
+            else
+                msg.info("[REMOVE] Not in custom map: " .. entry.filename)
+            end
+            return
+        end
+    end
+end
+
+
 
 
 
@@ -93,6 +111,7 @@ function len(some_map)
     return cnt
 end
 
+mp.add_key_binding("r", "remove-current-from-map", remove_current_from_map)
 mp.register_event("start-file", on_start_file)
 mp.register_event("end-file", on_end)
 

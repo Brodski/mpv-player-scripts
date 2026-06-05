@@ -8,44 +8,38 @@ local height  = tonumber(mp.get_property("osd-height")) or 0
 local isFullscreen = false
 mp.observe_property("osd-width", "number", function(name, value)
     if value then
-        -- mp.msg.info("Window width changed: " .. value)
+        -- -- mp.msg.info("Window width changed: " .. value)
         log_width_and_height()
     end
 end)
 
 mp.observe_property("osd-height", "number", function(name, value)
     if value then
-        -- mp.msg.info("Window height changed: " .. value)
+        -- -- mp.msg.info("Window height changed: " .. value)
         log_width_and_height()
     end
 end)
 
 function on_start_dimensions()
-    mp.msg.info("height" .. height )
-    mp.msg.info("width" .. width )
+    -- mp.msg.info("height" .. height )
+    -- mp.msg.info("width" .. width )
     -- if (width ~= nil) or (height ~= nil) or (height ~= 0) or (width ~= 0) then
     if width ~= nil and width ~= 0 and height ~= nil and height ~= 0 then
-        mp.msg.info("@@@@@@@@@@@@@@@@- NULLLLLL dimensions")
         set_window_size(width, height)
-    else
-        mp.msg.info("on_start_dimensions- NULLLLLL dimensions")
-        -- set_window_size(200, 200)
     end
 end
 
 
 function log_width_and_height(event)
-    -- width = mp.get_property("osd-width")
-    -- height = mp.get_property("osd-height")
     width  = tonumber(mp.get_property("osd-width"))  or 0
     height  = tonumber(mp.get_property("osd-height")) or 0
-    mp.msg.info("(log_width_and_height) width: " .. width .. ", height: " .. height)
+    -- mp.msg.info("(log_width_and_height) width: " .. width .. ", height: " .. height)
 end
 
 function set_window_size(width, height)
     local geometry = string.format("%dx%d", width, height)
     mp.commandv("set", "geometry", geometry)
-    mp.msg.info("Setting window size to: " .. geometry)
+    -- mp.msg.info("Setting window size to: " .. geometry)
 end
 
 mp.observe_property("time-pos", "number", function(name, value)
@@ -58,7 +52,7 @@ mp.observe_property("time-pos", "number", function(name, value)
         
         -- if last frame 
         if remaining_time <= (1 / fps) and remaining_time > 0 then
-            mp.msg.info("Near end of video. Remaining time: " .. remaining_time .. " seconds")
+            -- mp.msg.info("Near end of video. Remaining time: " .. remaining_time .. " seconds")
             log_width_and_height()
         end
     end

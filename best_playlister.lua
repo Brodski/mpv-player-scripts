@@ -46,21 +46,23 @@ end
 local count = 1
 
 -- local SAVE_DIRECTORY = "D:\\mpv_playlists"
-local SAVE_DIRECTORY = "D:\\PLAYLISTS_MPV"
+-- local SAVE_DIRECTORY = "D:\\PLAYLISTS_MPV"
 
 
-local function save_playlist() 
+
+local function do_save(save_dir, base_name)
     -- Generate unique timestamp (reads filenames in Directory)
-    local timestamp = os.date("%Y-%m-%d-%H-%M")
-    local playlist_names_arr = get_files_in_dir(SAVE_DIRECTORY)
-    local idx, is_time_exist =  is_exists(playlist_names_arr, timestamp)
+    local playlist_names_arr = get_files_in_dir(save_dir)
+    local idx, is_time_exist = is_exists(playlist_names_arr, base_name)
+
+    local final_name = base_name
     if is_time_exist then 
-        timestamp = timestamp .. "_" .. count
+        final_name = base_name .. "_" .. count
         count = count + 1
     end
 
     -- Setup Save()-type objects
-    local save_path = utils.join_path(SAVE_DIRECTORY, timestamp .. ".m3u8")
+    local save_path = utils.join_path(save_dir, final_name .. ".m3u8")
     local save_file_io, err = io.open(save_path, "w")
     local playlist = mp.get_property_native("playlist")
     
@@ -84,10 +86,31 @@ local function save_playlist()
     end
 
     save_file_io:close()
-    mp.osd_message("Saved!")
+    -- mp.osd_message("Saved!")
     -- mp.msg.info("Playlist saved to " .. save_path)
 end
 
 
+
+local function save_playlist_wrap()
+    -- FIXED
+    local fixed_dir = "D:\\PLAYLISTS_MPV"
+
+    -- CURRENT
+    local first_file = mp.get_property("playlist/0/filename")
+    local current_dir, _ = utils.split_path(first_file)
+    local _, folder_name = utils.split_path(current_dir:match("(.-)[\\/]?$"))
+    
+    -- NAME IT 1/2
+    local timestamp = os.date("%Y_%m_%d")
+    local base_name = "__" .. folder_name .. "_" .. timestamp  -- e.g. "iron_maiden_2026_01_01"
+
+
+    do_save(fixed_dir, base_name)
+    do_save(current_dir, base_name)
+
+    mp.osd_message("Saved!")
+end
+
 -- mp.register_event("start-file", print_playlist)
-mp.add_key_binding("Ctrl+s", "save-playlist", save_playlist)
+mp.add_key_binding("Ctrl+s", "save-playlist", save_playlist_wrap)

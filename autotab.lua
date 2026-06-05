@@ -22,20 +22,26 @@ local function gobabygo()
         mp.command("playlist-next")
     end
 end
-    
-msg.info("TOP")
-msg.info("TOP")
-msg.info("TOP")
-msg.info("TOP")
-msg.info("TOP")
 
 local next_period_timer = mp.add_periodic_timer(wait_seconds, gobabygo)
 mp.add_timeout((wait_seconds - 1), function()
     next_period_timer:stop()
 end)
 
+-- Define the keybinding: Ctrl+z
+local isOn = false
+mp.add_key_binding("Ctrl+z", "delayed-next-toggle", function()
+    isOn = not isOn
+    if isOn then
+        mp.osd_message("Auto tab ON (ctrl z)")
+        next_period_timer:resume()
+    else
+        mp.osd_message("Auto tab OFF (ctrl z)")
+        next_period_timer:stop()
+    end
+end)
 -- Define the keybinding: Ctrl+n
-mp.add_key_binding("Ctrl+n", "delayed-next-baby", function()
+mp.add_key_binding("Ctrl+n", "delayed-next-baby", function()    
     isOn = true
     mp.osd_message("Auto tab on. (alt + n = off)")
     next_period_timer:resume()
@@ -58,6 +64,4 @@ local function pause(name, paused)
 end
 
 mp.observe_property("pause", "bool", pause)
-msg.info("WTF1 ")
 next_period_timer:stop()
-msg.info("WTF2 ")
